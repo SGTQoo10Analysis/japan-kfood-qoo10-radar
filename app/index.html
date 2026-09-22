@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>J-KFOOD RADAR · Qoo10 Japan</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#15171a;--muted:#737780;--line:#e5e7eb;--accent:#111}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:#111;color:white;padding:20px 28px;position:sticky;top:0;z-index:4}.head{max-width:1320px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:20px}.logo{font-weight:900;letter-spacing:-.03em;font-size:21px}.live{font-size:12px;opacity:.72}
+main{max-width:1320px;margin:24px auto;padding:0 20px}.hero{display:grid;grid-template-columns:1.7fr 1fr;gap:16px}.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}.hero h1{margin:0 0 10px;font-size:34px;letter-spacing:-.05em}.hero p{color:var(--muted);line-height:1.65;margin:0}.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.kpi{background:#fafafa;border:1px solid var(--line);border-radius:14px;padding:14px}.kpi b{display:block;font-size:26px;margin-top:5px}.label{font-size:12px;color:var(--muted)}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.controls input,.controls select{background:white;border:1px solid var(--line);padding:10px 12px;border-radius:10px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:white;border:1px solid var(--line);border-radius:18px;padding:18px;cursor:pointer;transition:.15s}.card:hover{transform:translateY(-2px);box-shadow:0 8px 25px #0000000d}.top{display:flex;justify-content:space-between;gap:10px}.rank{font-size:12px;color:var(--muted)}.score{font-size:34px;font-weight:900}.name{font-size:22px;font-weight:850;margin:4px 0}.jp{color:#777;font-size:13px}.delta{font-weight:800}.up{color:#087a4b}.warn{color:#9a6700}.down{color:#a23b3b}.tags span{display:inline-block;background:#f0f1f3;border-radius:99px;padding:5px 8px;font-size:11px;margin:3px 3px 0 0}.why{color:#50545b;font-size:13px;line-height:1.55;margin:12px 0}.signals{border-top:1px solid var(--line);margin-top:12px}.sig{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:12px}.sig b{font-weight:800}.section{font-size:21px;font-weight:900;margin:28px 0 12px}.table{overflow:auto;background:white;border:1px solid var(--line);border-radius:16px}.table table{width:100%;border-collapse:collapse;min-width:760px}.table th,.table td{text-align:left;padding:13px;border-bottom:1px solid var(--line);font-size:13px}.table th{background:#fafafa}.source{font-size:11px;color:#777;margin-top:10px}.source a{color:#555}.empty{text-align:center;padding:50px;color:#777}
+.drawer{position:fixed;inset:0;background:#0006;display:none;z-index:10}.drawer.show{display:block}.sheet{position:absolute;right:0;top:0;height:100%;width:min(560px,100%);background:white;padding:25px;overflow:auto}.close{float:right;border:0;background:#eee;border-radius:8px;padding:7px 10px}.bar{height:8px;background:#eee;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:#111}.decision{background:#f6f6f6;border-radius:12px;padding:14px;margin:14px 0;line-height:1.6;font-size:13px}
+@media(max-width:900px){.hero,.grid{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr 1fr}.hero h1{font-size:28px}}
+</style>
+</head>
+<body>
+<header><div class="head"><div class="logo">🇯🇵 J-KFOOD RADAR <span style="opacity:.45">/ Qoo10</span></div><div class="live">MVP · 2026-09-22 · 일본 시장</div></div></header>
+<main>
+<section class="hero">
+<div class="panel"><h1>“지금 일본에서 뜨기 시작한 한국 식품”</h1><p>SNS·검색·일본 미디어의 상승 신호와 Qoo10 경쟁도를 한 화면에서 비교합니다. <b>판매 성공을 예측하는 점수</b>가 아니라, 조사할 상품의 우선순위를 정하는 레이더입니다.</p></div>
+<div class="panel"><div class="kpis"><div class="kpi"><span class="label">감지 상품</span><b id="count">0</b></div><div class="kpi"><span class="label">상승 후보</span><b id="rising">0</b></div><div class="kpi"><span class="label">경쟁 낮음</span><b id="low">0</b></div></div></div>
+</section>
+<div class="controls">
+<input id="search" placeholder="상품명 / 일본어 키워드 검색">
+<select id="cat"><option value="all">전체 카테고리</option><option>디저트</option><option>라면·면류</option><option>과자</option><option>소스·조미료</option></select>
+<select id="stage"><option value="all">전체 단계</option><option value="early">초기 상승</option><option value="growing">확산</option><option value="mature">성숙</option></select>
+<select id="sort"><option value="score">트렌드 점수순</option><option value="delta">상승폭순</option><option value="competition">Qoo10 경쟁 낮은순</option></select>
+</div>
+<div class="section">🔥 오늘의 상품 발굴 후보</div><div id="grid" class="grid"></div>
+<div class="section">🧭 상품화 판단표</div>
+<div class="table"><table><thead><tr><th>상품</th><th>Trend</th><th>24h</th><th>Qoo10 경쟁</th><th>상품화 포인트</th></tr></thead><tbody id="tbody"></tbody></table></div>
+<div class="section">⚙️ 실제 데이터 수집 구조</div>
+<div class="panel"><p class="why"><b>TikTok Creative Center</b> → 일본 지역/기간별 트렌드 신호 · <b>Instagram Graph API</b> → 허용된 계정/미디어 범위 · <b>Google Trends Japan</b> → 검색 급상승 · <b>일본 웹/RSS</b> → 신상품·트렌드 기사 · <b>Qoo10 QAPI</b> → 경쟁상품/가격/판매자 데이터.</p><p class="source">공개 데이터와 공식 API의 허용 범위만 사용하며, 플랫폼의 로그인/권한이 필요한 데이터는 별도 인증이 필요합니다.</p></div>
+</main>
+<div id="drawer" class="drawer" onclick="if(event.target===this)closeDrawer()"><div class="sheet"><button class="close" onclick="closeDrawer()">닫기</button><div id="detail"></div></div></div>
+<script>
+const DATA=[
+{name:"クロッチ",ko:"크로치",cat:"디저트",stage:"early",score:87,delta:18,competition:22,tiktok:86,instagram:78,search:71,media:92,novelty:96,tags:["한국 디저트","떡","크루아상"],why:"일본의 젊은층 트렌드 콘텐츠에서 차기 한국 디저트로 언급되는 신생 키워드. ‘쫀득+바삭’처럼 영상으로 전달하기 쉬운 식감이 핵심.",q:"냉동 베이커리·떡 디저트 완제품의 일본 판매 가능성과 통관/보관조건을 먼저 확인.",sources:["일본 트렌드 미디어"]},
+{name:"ヨアジョン",ko:"요아정",cat:"디저트",stage:"growing",score:81,delta:9,competition:48,tiktok:82,instagram:84,search:63,media:88,novelty:68,tags:["요거트","토핑","디저트"],why:"한국식 토핑 요거트가 일본 K-Food 콘텐츠에서 지속적으로 노출. 신오쿠보 등 한국 문화 소비 지역과 연결되는 콘텐츠가 많음.",q:"완제품보다 토핑·벌집꿀·시리얼 등 상온/배송 가능한 주변 상품을 탐색.",sources:["일본 공개 웹자료"]},
+{name:"韓国式スイーツ餅",ko:"한국식 쫀득 디저트",cat:"디저트",stage:"growing",score:78,delta:12,competition:35,tiktok:76,instagram:75,search:70,media:82,novelty:88,tags:["모찌","떡","식감"],why:"일본 SNS에서 ‘쫀득함’과 단면/ASMR이 콘텐츠 포인트로 소비되는 흐름. 개별 브랜드보다 카테고리 신호로 보는 것이 적절.",q:"개별 SKU보다 냉동 떡·초코 모찌·크림 떡 등 여러 SKU를 묶어 테스트.",sources:["일본 트렌드 자료"]},
+{name:"SWICY",ko:"매운맛+단맛",cat:"라면·면류",stage:"growing",score:74,delta:6,competition:71,tiktok:65,instagram:63,search:77,media:82,novelty:59,tags:["매운맛","단맛","라면"],why:"Sweet + Spicy 조합이 일본 식품 콘셉트로 활용되고 있음. 다만 이미 상품화된 제품이 있어 경쟁 신호를 함께 봐야 함.",q:"신규 SKU 또는 조합형 상품을 우선 검토하고 단순 인기 라면은 차별화 여부 확인.",sources:["일본 식품업계 공개자료"]},
+{name:"韓国チョコ餅",ko:"한국식 초코 떡",cat:"과자",stage:"early",score:72,delta:15,competition:29,tiktok:74,instagram:69,search:61,media:73,novelty:91,tags:["초콜릿","떡","모찌"],why:"바삭/쫀득 식감과 단면 비주얼을 앞세운 디저트형 콘텐츠. 아직 카테고리 확산 초기로 볼 수 있는 후보.",q:"상온 보관 가능한 과자형 SKU가 있는지 한국 도매/제조사에서 우선 탐색.",sources:["일본 공개 트렌드 자료"]}
+];
+function render(){
+ let q=document.getElementById("search").value.toLowerCase(),cat=document.getElementById("cat").value,stage=document.getElementById("stage").value,sort=document.getElementById("sort").value;
+ let a=DATA.filter(x=>(!q||(x.name+x.ko).toLowerCase().includes(q))&&(cat==="all"||x.cat===cat)&&(stage==="all"||x.stage===stage));
+ a.sort((x,y)=>sort==="delta"?y.delta-x.delta:sort==="competition"?x.competition-y.competition:y.score-x.score);
+ document.getElementById("count").textContent=a.length;document.getElementById("rising").textContent=a.filter(x=>x.delta>=10).length;document.getElementById("low").textContent=a.filter(x=>x.competition<=35).length;
+ document.getElementById("grid").innerHTML=a.length?a.map((x,i)=>`<article class="card" onclick="openDetail(${DATA.indexOf(x)})"><div class="top"><div><div class="rank">#${i+1} · ${x.cat}</div><div class="name">${x.ko}</div><div class="jp">${x.name}</div></div><div class="score">${x.score}</div></div><div class="delta ${x.delta>=10?'up':'warn'}">▲ ${x.delta}% / 24h</div><div class="tags">${x.tags.map(t=>`<span>${t}</span>`).join("")}</div><p class="why">${x.why}</p><div class="signals"><div class="sig"><span>TikTok</span><b>${x.tiktok}</b></div><div class="sig"><span>Instagram</span><b>${x.instagram}</b></div><div class="sig"><span>Search</span><b>${x.search}</b></div><div class="sig"><span>Japan media</span><b>${x.media}</b></div><div class="sig"><span>Qoo10 competition</span><b>${x.competition}/100</b></div></div><div class="source">클릭하면 상품화 분석</div></article>`).join(""):`<div class="empty">조건에 맞는 후보가 없습니다.</div>`;
+ document.getElementById("tbody").innerHTML=a.map(x=>`<tr><td><b>${x.ko}</b><br><span class="label">${x.name}</span></td><td><b>${x.score}</b>/100</td><td class="up">+${x.delta}%</td><td>${x.competition}/100</td><td>${x.q}</td></tr>`).join("");
+}
+function openDetail(i){let x=DATA[i];document.getElementById("detail").innerHTML=`<h2>${x.ko}</h2><div class="jp">${x.name}</div><div class="score">${x.score}<span style="font-size:15px">/100</span></div><p>${x.why}</p><div class="decision"><b>Qoo10 상품화 포인트</b><br>${x.q}</div>${[['TikTok',x.tiktok],['Instagram',x.instagram],['검색',x.search],['일본 미디어',x.media],['신규성',x.novelty]].map(s=>`<p><b>${s[0]}</b> · ${s[1]}<div class="bar"><i style="width:${s[1]}%"></i></div></p>`).join("")}<p><b>Qoo10 경쟁도</b> · ${x.competition}/100<div class="bar"><i style="width:${x.competition}%"></i></div></p><p class="source">확인 출처 유형: ${x.sources.join(" · ")}</p><p class="source">주의: 이 화면의 샘플 수치는 UI 검증용이며, 실서비스에서는 각 커넥터의 실제 수집값으로 교체됩니다.</p>`;document.getElementById("drawer").classList.add("show")}
+function closeDrawer(){document.getElementById("drawer").classList.remove("show")}
+["search","cat","stage","sort"].forEach(id=>document.getElementById(id).addEventListener("input",render));render();
+</script>
+</body></html>
